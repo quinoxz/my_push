@@ -1,0 +1,59 @@
+group 'com.push.my_push.my_push'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {url 'https://developer.huawei.com/repo/'}
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.huawei.agconnect:agcp:1.6.0.300'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {url 'https://developer.huawei.com/repo/'}
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+
+    android{
+        repositories {
+            flatDir {
+                dirs 'libs'
+            }
+        }
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.huawei.hms:push:6.9.0.300'
+    implementation (name: 'push-7.0.41.301', ext: 'aar')
+    implementation (name: 'com.heytap.msp_3.1.0', ext: 'aar')
+    implementation (name: 'vivo_pushSDK_v3.0.0.4_484', ext: 'aar')
+    implementation (name: 'MiPush_SDK_Client_5_6_2-C_3rd', ext: 'aar')
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'commons-codec:commons-codec:1.6'
+    implementation 'com.android.support:support-annotations:28.0.0'
+}
