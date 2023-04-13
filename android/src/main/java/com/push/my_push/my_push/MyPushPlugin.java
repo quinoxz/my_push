@@ -77,8 +77,8 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
     if(brand == "vivo"){
       try {
         HashMap hashMap = new HashMap();
-        hashMap.put("api_key",map.get("oppoAppKey").toString());
-        hashMap.put("app_id",map.get("oppoAppId").toString());
+        hashMap.put("api_key",map.get("vivoAppKey").toString());
+        hashMap.put("app_id",map.get("vivoAppId").toString());
         initManifest(hashMap);
         PushClient.getInstance(context).initialize();
         PushClient.getInstance(context).turnOnPush((int state)->{
