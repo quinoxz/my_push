@@ -54,6 +54,8 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     }else if (call.method.equals("initPush")) {
       initPush(call,result);
+    }else if (call.method.equals("setAliasOrToken")) {
+      setAliasOrToken(call,result);
     }
   }
 
@@ -72,7 +74,6 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
     String alias = map.get("alias").toString();
     if(brand.equals("xiaomi") || brand.equals("redmi")){
       MiPushClient.registerPush(context,map.get("xiaomiAppId").toString(), map.get("xiaomiAppKey").toString());
-      MiPushClient.setUserAccount(context,alias, null);
     }
     if(brand == "vivo"){
       try {
@@ -83,9 +84,6 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
         PushClient.getInstance(context).initialize();
         PushClient.getInstance(context).turnOnPush((int state)->{
           Log.d(TAG, "turnOnPush state= "+ state + "regId" + PushClient.getInstance(context).getRegId());
-        });
-        PushClient.getInstance(context).bindAlias(alias,(int state)->{
-          Log.d(TAG, "bindAlias state= "+ state);
         });
       } catch (VivoPushException e) {
         throw new RuntimeException(e);
@@ -117,19 +115,43 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
             Log.i(TAG,"urnOnNotificationCenter onFailure"+errorString);
           }
         });
-        // 获取PushToken
-        HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>(){
-          @Override
-          public void onSuccess(String pushToken) {
-            Log.i(TAG,"getPushToken pushToken"+pushToken);
-            channel.invokeMethod("pushToken",pushToken);
-          }
-          @Override
-          public void onFailure(int errorCode,String errorString) {
-            Log.i(TAG,"getPushToken onFailure "+errorString);
-          }
-        });
       }
+    }
+
+  }
+
+  public void setAliasOrToken(MethodCall call,Result result){
+    String brand = Build.BRAND.toLowerCase(Locale.getDefault());
+    boolean isHarmonyOs = CommonUtil.isHarmonyOs();
+    Log.i(TAG, "initPush brand:" + brand + "isHarmonyOs:" + isHarmonyOs);
+
+    HashMap<String, Object> map = call.arguments();
+    String alias = map.get("alias").toString();
+    Log.i(TAG, "setAliasOrToken $brand ${call.arguments} ${CommonUtil.isHarmonyOs()}");
+    if(brand == "xiaomi" || brand == "redmi"){
+      MiPushClient.setUserAccount(this, call.arguments.toString(), null);
+    }
+    if(brand == "vivo"){
+      PushClient.getInstance(context).bindAlias(alias,(int state)->{
+        Log.d(TAG, "bindAlias state= "+ state);
+      });
+    }
+    if(brand == "oppo"){
+      HeytapPushManager.register(context, oppo_APP_KEY, oppo_APP_Secret,mPushCallback);
+    }
+    if(brand == "honor" && !CommonUtil.isHarmonyOs()){
+      // 获取PushToken
+      HonorPushClient.getInstance().getPushToken(new HonorPushCallback<String>(){
+        @Override
+        public void onSuccess(String pushToken) {
+          Log.i(TAG,"getPushToken pushToken"+pushToken);
+          channel.invokeMethod("pushToken",pushToken);
+        }
+        @Override
+        public void onFailure(int errorCode,String errorString) {
+          Log.i(TAG,"getPushToken onFailure "+errorString);
+        }
+      });
     }
 
   }

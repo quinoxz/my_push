@@ -1,7 +1,7 @@
 name: my_push
-description: A new Flutter project.
+description: flutter 集成安卓厂商推送插件
 version: 0.0.1
-homepage: https://github.com/quinoxz/my_push.git
+homepage: https://github.com/quinoxz/
 
 environment:
   sdk: '>=2.19.3 <3.0.0'
