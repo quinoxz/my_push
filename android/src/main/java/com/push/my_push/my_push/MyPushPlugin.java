@@ -89,7 +89,7 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
         throw new RuntimeException(e);
       }
     }
-    if(brand.equals("oppo")){
+    if(brand.equals("oppo") || brand.equals("oneplus")){
       HeytapPushManager.init(context,true);
       HeytapPushManager.register(context,map.get("oppoAppKey").toString(), map.get("oppoAppSecret").toString(),mPushCallback);
       HeytapPushManager.enableAppNotificationSwitch(state->{
