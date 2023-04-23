@@ -56,7 +56,20 @@ public class MyPushPlugin implements FlutterPlugin, MethodCallHandler {
       initPush(call,result);
     }else if (call.method.equals("setAliasOrToken")) {
       setAliasOrToken(call,result);
+    }else if (call.method.equals("getManufacturer")) {
+      String brand = Build.BRAND;
+      result.success(brand);
+    }else if (call.method.equals("getRealManufacturer")) {
+      String brand = Build.BRAND.toLowerCase();
+      if(brand.equals("honor") && CommonUtil.isHarmonyOs()){
+        brand = "huawei";
+      }
+      if(brand.equals("oneplus")){
+        brand = "oppo";
+      }
+      result.success(brand);
     }
+
   }
 
   @Override
